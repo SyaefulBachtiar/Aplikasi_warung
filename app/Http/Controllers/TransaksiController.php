@@ -12,7 +12,35 @@ class TransaksiController
     function index()
     {
         $transaksi = transaksiModel::with(['details.barang'])->get();
-        return view('app.user_riwayat', compact('transaksi'));
+        if($transaksi->isNotEmpty()){
+            $total_jumlah = transaksiDetailModel::where('transaksi_id', $transaksi->first()->id)->sum('jumlah_barang_satuan');
+            return view('app.user_riwayat', compact('transaksi', 'total_jumlah'));
+        }else{
+            return view('app.user_riwayat', compact('transaksi'));
+        }
+     
 
     }
+
+    // detail 
+    function detail($id)
+    {
+        $detail_transaksi = transaksiModel::with(['details.barang'])->findOrFail($id);
+        return view('app.user_detail_transaksi', compact('detail_transaksi'));
+    }
+
+    // delete
+    function delete ($id)
+    {
+        try{
+
+            transaksiModel::where('id', $id)->delete();
+
+            return redirect()->back()->with('success', 'Berhasil menghapush!');
+        }catch(\Exception $e){
+            return redirect()->back()->with('error', 'Gagal hapus: ' . $e->getMessage());
+        }
+    }
+
+    
 }

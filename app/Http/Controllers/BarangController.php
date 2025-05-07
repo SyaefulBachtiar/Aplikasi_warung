@@ -7,6 +7,7 @@ use App\Models\barangModel;
 use App\Models\transaksiModel;
 use App\Models\transaksiDetailModel;
 use Illuminate\Support\Facades\DB;
+use Carbon\Carbon;
 
 class BarangController
 {
@@ -40,6 +41,8 @@ class BarangController
 
 
         try {
+            // zonna waktu
+            $waktuJakarta = Carbon::now('Asia/Jakarta');
             // id barang
             $id_barang = $request->input('id_barang');
             // kode transaksi
@@ -64,7 +67,9 @@ class BarangController
             
             $transaksi = transaksiModel::create([
                 'kode_transaksi' => $kode_transaksi,
-                'total_harga' => $total_harga_tanpaRP
+                'total_harga' => $total_harga_tanpaRP,
+                'created_at' => $waktuJakarta,
+                'updated_at' => $waktuJakarta
             ]);
 
 
@@ -77,7 +82,9 @@ class BarangController
                     'barang_id' => (int)$id_barang[$i],
                     'jumlah_barang_satuan' => (int)$jumlah_satuan[$i],
                     'harga_satuan' => (int)$harga_satuan[$i],
-                    'total_harga' => $jumlah_harga_satuan
+                    'total_harga' => $jumlah_harga_satuan,
+                    'created_at' => $waktuJakarta,
+                    'updated_at' => $waktuJakarta
                 ]);
             }
         

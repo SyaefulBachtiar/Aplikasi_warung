@@ -18,6 +18,12 @@ Route::get('/riwayat', [TransaksiController::class, 'index'])->name('index');
 // create transaksi
 Route::post('/simpan-transaksi', [BarangController::class, 'transaksi'])->name('simpan-transaksi');
 
+// detail
+Route::get('/detail/{id}', [TransaksiController::class, 'detail'])->name('detail');
+
+// Delete transaksi
+Route::get('/delete/{id}', [TransaksiController::class, 'delete'])->name('delete');
+
 
 
 Route::get('/', function () {

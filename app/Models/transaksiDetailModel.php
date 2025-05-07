@@ -11,6 +11,8 @@ class transaksiDetailModel extends Model
 {
     use HasFactory;
 
+    public $timestamps = true;
+
     protected $table = 'table_transaksi_detail';
     protected $fillable = [
         'transaksi_id',
@@ -18,6 +20,8 @@ class transaksiDetailModel extends Model
         'jumlah_barang_satuan',
         'harga_satuan',
         'total_harga',
+        'created_at',
+        'updated_at'
     ];
 
     function barang() : BelongsTo

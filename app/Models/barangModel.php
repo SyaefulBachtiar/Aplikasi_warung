@@ -7,6 +7,8 @@ use App\Models\transaksiDetailModel;
 
 class barangModel extends Model
 {
+    public $timestamps = true;
+
     protected $table = 'table_barang';
     protected $fillable = [
         'nama_barang',

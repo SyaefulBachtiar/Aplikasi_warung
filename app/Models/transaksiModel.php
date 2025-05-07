@@ -11,11 +11,20 @@ class transaksiModel extends Model
 {
     use HasFactory;
 
+    public $timestamps = true;
+
     protected $table = 'transaksi_items';
     protected $fillable = [
         'kode_transaksi',
-        'total_harga'
+        'total_harga',
+        'created_at',
+        'updated_at'
     ];
+
+    public function totalJumlahBarang()
+    {
+        return $this->details()->sum('jumlah_barang_satuan');
+    }
 
     public function details(): HasMany
     {
