@@ -11,9 +11,11 @@ Route::get('/dashboard', [BarangController::class, 'index'])->middleware(['auth'
 // Create barang
 Route::post('/create', [BarangController::class, 'store'])->name('create.store');
 
+// daftar barang
+Route::get('/daftar-barang', [BarangController::class, 'daftar_barang'])->name('daftar_barang');
+
 // Table riwayat
 Route::get('/riwayat', [TransaksiController::class, 'index'])->name('index');
-
 
 // create transaksi
 Route::post('/simpan-transaksi', [BarangController::class, 'transaksi'])->name('simpan-transaksi');
@@ -21,8 +23,20 @@ Route::post('/simpan-transaksi', [BarangController::class, 'transaksi'])->name('
 // detail
 Route::get('/detail/{id}', [TransaksiController::class, 'detail'])->name('detail');
 
+// Update barang
+Route::put('/update_barang/{id}', [BarangController::class, 'update'])->name('update');
+
+// Delete barang
+Route::get('/delete_barang/{id}', [BarangController::class, 'delete'])->name('delete');
+
 // Delete transaksi
 Route::get('/delete/{id}', [TransaksiController::class, 'delete'])->name('delete');
+
+// chart keuangan
+Route::get('/chart', [TransaksiController::class, 'chart'])->name('chart');
+
+// Grfik keuangan
+Route::get('/grafik', [TransaksiController::class, 'grafik'])->name('grafik');
 
 
 

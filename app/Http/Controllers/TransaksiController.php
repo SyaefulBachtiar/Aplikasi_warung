@@ -4,6 +4,8 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use App\Models\barangModel;
+use Illuminate\Support\Facades\DB;
+use Carbon\Carbon;
 use App\Models\transaksiDetailModel;
 use App\Models\transaksiModel;
 
@@ -42,5 +44,40 @@ class TransaksiController
         }
     }
 
+    // chart
+    function chart()
+    {
+        return view('app.grafik_keuangan');
+    }
+
+    // Grafik
+    function grafik()
+    {
+        $data = transaksiModel::select(
+            DB::raw('DAY(created_at) as tanggal'),
+            DB::raw('MONTH(created_at) as bulan'),
+            DB::raw('YEAR(created_at) as tahun'),
+            DB::raw('SUM(total_harga) as total')
+        )
+        ->groupBy(DB::raw('DAY(created_at), YEAR(created_at), MONTH(created_at)'))
+        ->orderBy('tanggal', 'ASC')
+        ->orderBy('tahun', 'ASC')
+        ->orderBy('bulan', 'ASC')
+        ->get();
+
+        // foreach($data as $items){
+        //     echo 'Tanggal', $items->tanggal;
+        //     echo '<br>';
+        //     echo 'bulan', $items->bulan;
+        //     echo '<br>';
+        //     echo 'Tahun', $items->tahun;
+        //     echo '<br>';
+        //     echo 'Total', $items->total;
+        //     echo '<br>';
+        // }
+
+
+        return response()->json($data);
+    }
     
 }

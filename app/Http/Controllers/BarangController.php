@@ -17,6 +17,19 @@ class BarangController
         return view('app.user_home', array_merge(compact('data')));
     }
 
+    public function daftar_barang()
+    {
+        $data = barangModel::all();
+        if($data->isNotEmpty()){
+        return view('app.user_table_barang', compact('data'));
+        }else{
+            $data = 0;
+            return view('app.user_table_barang', compact('data'));
+        }
+
+
+    }
+
     // input barang
     public function store(Request $request)
     {  
@@ -68,8 +81,7 @@ class BarangController
             $transaksi = transaksiModel::create([
                 'kode_transaksi' => $kode_transaksi,
                 'total_harga' => $total_harga_tanpaRP,
-                'created_at' => $waktuJakarta,
-                'updated_at' => $waktuJakarta
+
             ]);
 
 
@@ -97,6 +109,27 @@ class BarangController
         } catch (\Exception $e) {
             DB::rollBack();
             return redirect()->route('index')->with('error', 'Transaksi gagal: ' . $e->getMessage());
+        }
+    }
+
+    // update
+    function update(Request $request, $id)
+    {
+        $barang = barangModel::findOrFail($id);
+        $barang->update($request->all());
+
+        return redirect()->back()->with('success', 'Berhasil update barang');
+    }
+
+    // delete barang
+    function delete($id)
+    {
+        try{
+            barangModel::where('id', $id)->delete();
+
+            return redirect()->back()->with('success', 'berhasil delete barang');
+        }catch(\Exception $e){
+            return redirect()->back()->with('error', 'Gagal delete barang', $e->getMessage());
         }
     }
 }

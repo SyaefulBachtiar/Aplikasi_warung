@@ -75,7 +75,7 @@
             <div class="mb-4">
                 <input type="text" id="kode_transaksi" name="kode_transaksi" value="" required readonly hidden>
                 <p>Total</p>
-                <input type="text" id="total" name="total" required value="" readonly>
+                <input type="text" id="total" name="total"  required value="" readonly>
             </div>
 
             <button type="submit" id="btnBayar" class="btn btn-primary" disabled>Bayar</button>

@@ -8,6 +8,7 @@
             <tr>
                 <th>Kode transaksi</th>
                 <th>Jumlah barang</th>
+                <th>Total</th>
                 <th>Tanggal</th>
                 <th>Info</th>
             </tr>
@@ -16,6 +17,7 @@
             <tr>
                 <th>Kode transaksi</th>
                 <th>Jumlah barang</th>
+                <th>Total</th>
                 <th>Tanggal</th>
                 <th>Info</th>
             </tr>
@@ -29,7 +31,8 @@
                 
                 
                     <td>{{ $items->kode_transaksi }}</td>
-                    <td>{{ $total_jumlah ?? '' }}</td>
+                    <td>{{ $total_jumlah}}</td>
+                    <td>{{ $items->total_harga }}</td>
                     <td>{{ $items->created_at }}</td>
                     <td>
                         <a href="/detail/{{ $items->id }}" class="btn btn-primary">Detail</a>

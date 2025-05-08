@@ -217,7 +217,7 @@ function hitungTotal() {
         const subtotal = jumlah * harga;
         total += subtotal;
     });
-    document.getElementById("total").value = 'Rp.' + total;
+    document.getElementById("total").value = 'Rp.' + total.toLocaleString('id-ID');
 
 
 }
@@ -242,4 +242,8 @@ function hitungTotal() {
 // format uang
 $(document).ready(function() {
     $('.money').simpleMoneyFormat();
+});
+
+$(document).ready(function() {
+    $('.uang').simpleMoneyFormat();
 });
