@@ -53,16 +53,50 @@ class TransaksiController
     // Grafik
     function grafik()
     {
-        $data = transaksiModel::select(
+
+
+        $perhari = TransaksiModel::select(
             DB::raw('DAY(created_at) as tanggal'),
-            DB::raw('MONTH(created_at) as bulan'),
+            DB::raw('MONTHNAME(created_at) as bulan'),
+            DB::raw('MONTH(created_at) as bulan_angka'),
             DB::raw('YEAR(created_at) as tahun'),
             DB::raw('SUM(total_harga) as total')
         )
-        ->groupBy(DB::raw('DAY(created_at), YEAR(created_at), MONTH(created_at)'))
-        ->orderBy('tanggal', 'ASC')
-        ->orderBy('tahun', 'ASC')
-        ->orderBy('bulan', 'ASC')
+        ->groupBy(
+            DB::raw('DAY(created_at)'),
+            DB::raw('MONTHNAME(created_at)'),
+            DB::raw('MONTH(created_at)'),
+            DB::raw('YEAR(created_at)')
+        )
+        ->orderBy(DB::raw('YEAR(created_at)'), 'ASC')
+        ->orderBy(DB::raw('MONTH(created_at)'), 'ASC')
+        ->orderBy(DB::raw('DAY(created_at)'), 'ASC')
+        ->get();
+
+        $now = Carbon::now();
+        $lastMonth = $now->copy()->subMonth();
+
+        $perBulan = TransaksiModel::select(
+            DB::raw('YEAR(created_at) as tahun'),
+            DB::raw('MONTH(created_at) as bulan_angka'),
+            DB::raw('MONTHNAME(created_at) as nama_bulan'),
+            DB::raw('SUM(total_harga) as total')
+        )
+        ->where(function ($query) use ($now, $lastMonth) {
+            $query->whereYear('created_at', $now->year)
+                  ->whereMonth('created_at', $now->month)
+                  ->orWhere(function ($q) use ($lastMonth) {
+                      $q->whereYear('created_at', $lastMonth->year)
+                        ->whereMonth('created_at', $lastMonth->month);
+                  });
+        })
+        ->groupBy(
+            DB::raw('YEAR(created_at)'),
+            DB::raw('MONTH(created_at)'),
+            DB::raw('MONTHNAME(created_at)')
+        )
+        ->orderBy('tahun')
+        ->orderBy('bulan_angka')
         ->get();
 
         // foreach($data as $items){
@@ -77,7 +111,10 @@ class TransaksiController
         // }
 
 
-        return response()->json($data);
+        return response()->json([
+            'harian' => $perhari,
+            'bulanan' => $perBulan
+        ]);
     }
     
 }

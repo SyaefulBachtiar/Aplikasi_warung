@@ -1,55 +1,42 @@
-// Set new default font family and font color to mimic Bootstrap's default styling
-Chart.defaults.global.defaultFontFamily = '-apple-system,system-ui,BlinkMacSystemFont,"Segoe UI",Roboto,"Helvetica Neue",Arial,sans-serif';
-Chart.defaults.global.defaultFontColor = '#292b2c';
-
-// Bar Chart Example
-
 fetch('/grafik')
-.then(response => response.json())
-.then(data => {
+  .then(response => response.json())
+  .then(data => {
+    const label = data.bulanan.map(item => item.nama_bulan);
+    const values = data.bulanan.map(item => item.total.toLocaleString('id-ID'));
 
-  const label = data.map(item => "Tanggal" + item.tanggal);
-  const values = data.map(item => item.total);
+    const ctx = document.getElementById("myBarChart").getContext('2d');
 
-var ctx = document.getElementById("myBarChart");
-var myLineChart = new Chart(ctx, {
-  type: 'bar',
-  data: {
-    labels: label,
-    datasets: [{
-      label: "Revenue",
-      backgroundColor: "rgba(2,117,216,1)",
-      borderColor: "rgba(2,117,216,1)",
-      data: values,
-    }],
-  },
-  options: {
-    scales: {
-      xAxes: [{
-        time: {
-          unit: 'month'
-        },
-        gridLines: {
-          display: false
-        },
-        ticks: {
-          maxTicksLimit: 6
+    new Chart(ctx, {
+      type: 'bar',
+      data: {
+        labels: label,
+        datasets: [{
+          label: "Penghasilan",
+          backgroundColor: "rgba(2,117,216,1)",
+          borderColor: "rgba(2,117,216,1)",
+          data: values
+        }]
+      },
+      options: {
+        scales: {
+          x: {
+            ticks: {
+              maxTicksLimit: 7
+            },
+            grid: {
+              display: false
+            }
+          },
+          y: {
+            beginAtZero: true,
+            ticks: {
+              maxTicksLimit: 5
+            },
+            grid: {
+              display: true
+            }
+          }
         }
-      }],
-      yAxes: [{
-        ticks: {
-          min: 0,
-          max: 15000,
-          maxTicksLimit: 5
-        },
-        gridLines: {
-          display: true
-        }
-      }],
-    },
-    legend: {
-      display: false
-    }
-  }
-});
-})
+      }      
+    });
+  });

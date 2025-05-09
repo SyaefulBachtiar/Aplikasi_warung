@@ -61,6 +61,33 @@
     <div class="card-header">
         Total
     </div>
+    <div class="card-body" style="overflow-x: auto;">
+        <form method="post" id="inp" action="{{ route('simpan-transaksi') }}">
+            @csrf
+            <table id="list-info" class="struk">
+                    <tr>
+                        <th>Nama Barang</th>
+                        <th>Jumlah Barang</th>
+                        <th>Harga Barang</th>
+                        <th>Jumlah Harga Barang</th>
+                    </tr>
+            </table>
+            <div class="mb-4">
+                <input type="text" id="kode_transaksi" name="kode_transaksi" value="" required readonly hidden>
+                <p>Total</p>
+                <input type="text" id="total" name="total"  required value="" readonly>
+            </div>
+
+            <button type="submit" id="btnBayar" class="btn btn-primary" disabled>Bayar</button>
+        </form>
+    </div>
+</div>
+
+
+{{-- <div class="card mb-4">
+    <div class="card-header">
+        Total
+    </div>
     <div class="card-body">
         <form method="post" id="inp" action="{{ route('simpan-transaksi') }}">
             @csrf
@@ -81,7 +108,7 @@
             <button type="submit" id="btnBayar" class="btn btn-primary" disabled>Bayar</button>
         </form>
     </div>
-</div>
+</div> --}}
 
 
 <div class="row">

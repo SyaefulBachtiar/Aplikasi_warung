@@ -8,3 +8,14 @@ button{
     border-radius: 5px;
     color: white;
 }
+.struk, td, th {
+    text-align: left;
+}
+.struk{
+    border-collapse: collapse;
+    width: 100%;
+    border-collapse: collapse;
+}
+.struk th, td {
+    padding: 15px;
+}

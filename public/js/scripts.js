@@ -122,15 +122,15 @@ function reset(idProduk) {
 // membuat struk belanja
 function struk_belanja(id, nama, harga, jumlah) {
 
-    const ul = document.getElementById("list-info");
+    const table = document.getElementById("list-info");
 
     if(!listBarang[id]){
         listBarang[id] = true;
-            const li = document.createElement("li");
-            li.style.listStyleType = "none";
-
+            const tr = document.createElement("tr");
+            const td = document.createElement("td");
 
             let inputNama = document.createElement("input");
+            const tdNama = document.createElement("td");
             inputNama.type = "text";
             inputNama.name = "nama_barang[]";
             inputNama.value = nama;
@@ -138,6 +138,7 @@ function struk_belanja(id, nama, harga, jumlah) {
             inputNama.readOnly = true;
 
             let inputJumlah = document.createElement("input");
+            const tdJumlah = document.createElement("td");
             inputJumlah.type = "text";
             inputJumlah.name = "jumlah_satuan[]";
             inputJumlah.value = jumlah + 'pcs';
@@ -146,6 +147,7 @@ function struk_belanja(id, nama, harga, jumlah) {
 
 
             let inputHarga = document.createElement("input");
+            const tdHarga = document.createElement("td");
             inputHarga.type = "text";
             inputHarga.name = "harga[]";
             inputHarga.value = harga ;
@@ -161,22 +163,27 @@ function struk_belanja(id, nama, harga, jumlah) {
             inputId.hidden = true;
 
             let jml_satuan = document.createElement("input");
+            const tdSatuan = document.createElement("td");
             jml_satuan.type = "text";
             jml_satuan.id = `total-harga-${id}`;
             jml_satuan.value = parseInt(jumlah) * parseInt(harga.replace(/[^0-9]/g, ''));
             jml_satuan.disabled = "true";
 
 
-            li.appendChild(inputNama);
-            li.appendChild(inputJumlah);
-            li.appendChild(inputHarga);
-            li.appendChild(inputId);
-            li.appendChild(jml_satuan);
+            tdNama.appendChild(inputNama);
+            tdJumlah.appendChild(inputJumlah);
+            tdHarga.appendChild(inputHarga);
+            tdSatuan.appendChild(jml_satuan);
+
+            tr.appendChild(tdNama);
+            tr.appendChild(tdJumlah);
+            tr.appendChild(tdHarga);
+            tr.appendChild(tdSatuan);
+
+            table.appendChild(tr);
 
 
-            ul.appendChild(li);
-
-            listBarang[id] = li;
+            listBarang[id] = tr;
 
     }else{
         // Kalau sudah ada, update jumlah saja
@@ -190,6 +197,78 @@ function struk_belanja(id, nama, harga, jumlah) {
         }
     }
 
+
+    // function struk_belanja(id, nama, harga, jumlah) {
+
+    //     const ul= document.getElementById("list-info");
+    
+    //     if(!listBarang[id]){
+    //         listBarang[id] = true;
+    //             const li = document.createElement("li");
+    //             li.style.listStyleType = "none";
+    
+    
+    //             let inputNama = document.createElement("input");
+    //             inputNama.type = "text";
+    //             inputNama.name = "nama_barang[]";
+    //             inputNama.value = nama;
+    //             inputNama.required = true;
+    //             inputNama.readOnly = true;
+    
+    //             let inputJumlah = document.createElement("input");
+    //             inputJumlah.type = "text";
+    //             inputJumlah.name = "jumlah_satuan[]";
+    //             inputJumlah.value = jumlah + 'pcs';
+    //             inputJumlah.required = true;
+    //             inputJumlah.readOnly = true;
+    
+    
+    //             let inputHarga = document.createElement("input");
+    //             inputHarga.type = "text";
+    //             inputHarga.name = "harga[]";
+    //             inputHarga.value = harga ;
+    //             inputHarga.required = true;
+    //             inputHarga.readOnly = true;
+    
+    //             let inputId = document.createElement("input");
+    //             inputId.type = "text";
+    //             inputId.name = "id_barang[]";
+    //             inputId.value = id;
+    //             inputId.required = true;
+    //             inputId.readOnly = true;
+    //             inputId.hidden = true;
+    
+    //             let jml_satuan = document.createElement("input");
+    //             jml_satuan.type = "text";
+    //             jml_satuan.id = `total-harga-${id}`;
+    //             jml_satuan.value = parseInt(jumlah) * parseInt(harga.replace(/[^0-9]/g, ''));
+    //             jml_satuan.disabled = "true";
+    
+    
+    //             li.appendChild(inputNama);
+    //             li.appendChild(inputJumlah);
+    //             li.appendChild(inputHarga);
+    //             li.appendChild(inputId);
+    //             li.appendChild(jml_satuan);
+    
+    
+    //             ul.appendChild(li);
+    
+    //             listBarang[id] = li;
+    
+    //     }else{
+    //         // Kalau sudah ada, update jumlah saja
+    //         let inputs = listBarang[id].getElementsByTagName("input");
+    //         inputs[1].value = jumlah + 'pcs'; // inputJumlah di urutan kedua
+    
+    //         // jumlahkan per Produk
+    //         let totalHargaProdukInput = document.getElementById(`total-harga-${id}`);
+    //         if (totalHargaProdukInput) {
+    //             totalHargaProdukInput.value = parseInt(jumlah) * parseInt(harga.replace(/[^0-9]/g, ''));
+    //         }
+    //     }
+
+
     
     cekStrukBelanja();
 
@@ -202,25 +281,51 @@ function struk_belanja(id, nama, harga, jumlah) {
 // }
 
 function hitungTotal() {
-
-    const list = document.querySelectorAll("#list-info li");
+    const rows = document.querySelectorAll("#list-info tr");
     let total = 0;
-    list.forEach(li => {
-        const inputs = li.getElementsByTagName("input");
 
-        const nama = inputs[0].value;
-        const jumlahStr = inputs[1].value.replace('pcs', '').trim(); // hilangkan "pcs"
-        const jumlah = parseInt(jumlahStr) || 0;
+    rows.forEach(row => {
+        const inputs = row.querySelectorAll("input");
 
-        const harga = parseInt(inputs[2].value.replace(/[^0-9]/g, '')) || 0;
-        
-        const subtotal = jumlah * harga;
-        total += subtotal;
+        if (inputs.length >= 3) { // Pastikan ada minimal 3 input (nama, jumlah, harga)
+            const jumlahStr = inputs[1].value.replace('pcs', '').trim();
+            const jumlah = parseInt(jumlahStr) || 0;
+
+            const harga = parseInt(inputs[2].value.replace(/[^0-9]/g, '')) || 0;
+
+            const subtotal = jumlah * harga;
+            total += subtotal;
+        }
     });
-    document.getElementById("total").value = 'Rp.' + total.toLocaleString('id-ID');
 
-
+    const totalField = document.getElementById("total");
+    if (totalField) {
+        totalField.value = 'Rp. ' + total.toLocaleString('id-ID');
+    }
 }
+
+
+
+// function hitungTotal() {
+
+//     const list = document.querySelectorAll("#list-info li");
+//     let total = 0;
+//     list.forEach(li => {
+//         const inputs = li.getElementsByTagName("input");
+
+//         const nama = inputs[0].value;
+//         const jumlahStr = inputs[1].value.replace('pcs', '').trim(); // hilangkan "pcs"
+//         const jumlah = parseInt(jumlahStr) || 0;
+
+//         const harga = parseInt(inputs[2].value.replace(/[^0-9]/g, '')) || 0;
+        
+//         const subtotal = jumlah * harga;
+//         total += subtotal;
+//     });
+//     document.getElementById("total").value = 'Rp.' + total.toLocaleString('id-ID');
+
+
+// }
 
     // cek button
 
