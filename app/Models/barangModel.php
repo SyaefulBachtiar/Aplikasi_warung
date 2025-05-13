@@ -11,6 +11,7 @@ class barangModel extends Model
 
     protected $table = 'table_barang';
     protected $fillable = [
+        'users_id',
         'nama_barang',
         'deskripsi',
         'harga',
@@ -28,5 +29,9 @@ class barangModel extends Model
     function transaksiDetail()
     {
         return $this->hasMany(transaksiDetailModel::class, 'barang_id');
+    }
+    function user_id_barangModel()
+    {
+        return $this->belongsTo(User::class, 'users_id');
     }
 }

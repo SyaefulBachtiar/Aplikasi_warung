@@ -33,8 +33,8 @@
                 <td>Rp.{{ number_format($items->harga, 0, ',', '.' )}}</td>
                 <td>{{ $items->jumlah_barang }}</td>
                 <td>
-                    <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#ModalUpdateBarang{{ $items->id }}">Update</button>
-                    <a href="/delete_barang/{{ $items->id }}" class="btn btn-danger">Delete</a>
+                    <button type="button" class="btn btn-outline-success btn-sm" data-toggle="modal" data-target="#ModalUpdateBarang{{ $items->id }}">Update</button>
+                    <a href="/delete_barang/{{ $items->id }}" class="btn btn-outline-danger btn-sm">Delete</a>
                 </td>
             </tr>
             @include('layout.modal_update_barang')

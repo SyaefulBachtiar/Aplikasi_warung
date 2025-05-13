@@ -8,12 +8,21 @@ use Illuminate\Support\Facades\DB;
 use Carbon\Carbon;
 use App\Models\transaksiDetailModel;
 use App\Models\transaksiModel;
+use Illuminate\Support\Facades\Auth;
 
 class TransaksiController
 {
+    private $user_id;
+
+    public function __construct()
+    {
+        $this->user_id = Auth::id();
+    }
     function index()
     {
-        $transaksi = transaksiModel::with(['details.barang'])->get();
+        $transaksi = transaksiModel::with(['details.barang'])
+        ->where('users_id', $this->user_id)
+        ->get();
         if($transaksi->isNotEmpty()){
             $total_jumlah = transaksiDetailModel::where('transaksi_id', $transaksi->first()->id)->sum('jumlah_barang_satuan');
             return view('app.user_riwayat', compact('transaksi', 'total_jumlah'));
@@ -71,6 +80,7 @@ class TransaksiController
         ->orderBy(DB::raw('YEAR(created_at)'), 'ASC')
         ->orderBy(DB::raw('MONTH(created_at)'), 'ASC')
         ->orderBy(DB::raw('DAY(created_at)'), 'ASC')
+        ->where('users_id', $this->user_id)
         ->get();
 
         $now = Carbon::now();
@@ -97,6 +107,7 @@ class TransaksiController
         )
         ->orderBy('tahun')
         ->orderBy('bulan_angka')
+        ->where('users_id', $this->user_id)
         ->get();
 
         // foreach($data as $items){

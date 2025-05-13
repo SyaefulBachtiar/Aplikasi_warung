@@ -15,6 +15,7 @@ class transaksiDetailModel extends Model
 
     protected $table = 'table_transaksi_detail';
     protected $fillable = [
+        'users_id',
         'transaksi_id',
         'barang_id',
         'jumlah_barang_satuan',
@@ -31,6 +32,10 @@ class transaksiDetailModel extends Model
     function transaksi() : BelongsTo
     {
         return $this->belongsTo(transaksiModel::class, 'transaksi_id');
+    }
+    function users_id_detail_transaksi()
+    {
+        return $this->belongsTo(User::class, 'users_id');
     }
 
 }

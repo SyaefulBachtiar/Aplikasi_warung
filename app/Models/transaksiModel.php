@@ -15,19 +15,24 @@ class transaksiModel extends Model
 
     protected $table = 'transaksi_items';
     protected $fillable = [
+        'users_id',
         'kode_transaksi',
         'total_harga',
         'created_at',
         'updated_at'
     ];
 
-    public function totalJumlahBarang()
+    function totalJumlahBarang()
     {
         return $this->details()->sum('jumlah_barang_satuan');
     }
 
-    public function details(): HasMany
+    function details(): HasMany
     {
         return $this->hasMany(transaksiDetailModel::class, 'transaksi_id');
+    }
+    function users_id_transaksi()
+    {
+        return $this->belongsTo(User::class, 'users_id');
     }
 }

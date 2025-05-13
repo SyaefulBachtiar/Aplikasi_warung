@@ -8,22 +8,36 @@ use App\Models\transaksiModel;
 use App\Models\transaksiDetailModel;
 use Illuminate\Support\Facades\DB;
 use Carbon\Carbon;
+use Illuminate\Support\Facades\Auth;
 
 class BarangController
 {
+    private $user_id;
+
+    public function __construct()
+    {
+        $this->user_id = Auth::id();
+    }
+
     public function index()
     {
-        $data = barangModel::all();
+        
+        $data = barangModel::where('users_id', $this->user_id)->get();
+        if($data->isNotEmpty()){
         return view('app.user_home', array_merge(compact('data')));
+        }else{
+            $data = collect();
+            return view('app.user_home', array_merge(compact('data')));
+        }
     }
 
     public function daftar_barang()
     {
-        $data = barangModel::all();
+        $data = barangModel::where('users_id', $this->user_id)->get();
         if($data->isNotEmpty()){
         return view('app.user_table_barang', compact('data'));
         }else{
-            $data = 0;
+            $data = collect();
             return view('app.user_table_barang', compact('data'));
         }
 
@@ -41,10 +55,10 @@ class BarangController
             'jumlah_barang' => 'required|integer',
         ]);
         
-
+        $validated['users_id'] = Auth::id();
         barangModel::create($validated);
 
-        return redirect()->route('index')->with('success', 'Barang berhasil ditambahkan');
+        return redirect()->back()->with('success', 'Barang berhasil ditambahkan');
         
     }
 
@@ -79,9 +93,10 @@ class BarangController
             ]);
             
             $transaksi = transaksiModel::create([
+                'users_id' => $this->user_id,
                 'kode_transaksi' => $kode_transaksi,
                 'total_harga' => $total_harga_tanpaRP,
-
+                'created_at' => $waktuJakarta
             ]);
 
 
@@ -90,6 +105,7 @@ class BarangController
                 $jumlah_harga_satuan = (int)$harga_satuan[$i] * (int)$jumlah_satuan[$i];
 
                 transaksiDetailModel::create([
+                    'users_id' => $this->user_id,
                     'transaksi_id' => $transaksi->id,
                     'barang_id' => (int)$id_barang[$i],
                     'jumlah_barang_satuan' => (int)$jumlah_satuan[$i],
@@ -104,11 +120,11 @@ class BarangController
         
             DB::commit();
         
-            return redirect()->route('index')->with('success', 'Transaksi berhasil');
+            return redirect()->back()->with('success', 'Transaksi berhasil');
         
         } catch (\Exception $e) {
             DB::rollBack();
-            return redirect()->route('index')->with('error', 'Transaksi gagal: ' . $e->getMessage());
+            return redirect()->back()->with('error', 'Transaksi gagal: ' . $e->getMessage());
         }
     }
 

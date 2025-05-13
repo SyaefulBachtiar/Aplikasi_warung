@@ -3,9 +3,6 @@
     * Copyright 2013-2023 Start Bootstrap
     * Licensed under MIT (https://github.com/StartBootstrap/startbootstrap-sb-admin/blob/master/LICENSE)
     */
-
-
-
     // 
 // Scripts
 // 
@@ -93,12 +90,11 @@ function kurang(idProduk) {
     if (index !== -1) {
         cart[index].jumlah_barang = angkaPerBarang[idProduk];
     }
-    
+
         if (angkaPerBarang[idProduk] === 0) {
             if (listBarang[idProduk]) {
                 listBarang[idProduk].remove();
                 delete listBarang[idProduk];
-                
             }
         }else{
             struk_belanja(idProduk, nama, harga, angkaPerBarang[idProduk]);
@@ -126,65 +122,86 @@ function reset(idProduk) {
 
 // membuat struk belanja
 function struk_belanja(id, nama, harga, jumlah) {
-    const ul = document.getElementById("list-info");
-    const hargaNumber = parseInt(harga.replace(/[^0-9]/g, ''));
-    const total = parseInt(jumlah) * hargaNumber;
 
-    if (!listBarang[id]) {
-        const li = document.createElement('li');
-        li.style.listStyleType = "none";
-        li.classList = "mb-3";
+    const table = document.getElementById("list-info");
+    const a = parseInt(jumlah) * parseInt(harga.replace(/[^0-9]/g, ''));
 
-        const inputNama = document.createElement('input');
-        inputNama.type = 'text';
-        inputNama.name = 'nama_barang[]';
-        inputNama.value = nama;
-        inputNama.hidden = true;
+    if(!listBarang[id]){
+        listBarang[id] = true;
+            const tr = document.createElement("tr");
+            const td = document.createElement("td");
 
-        const inputJumlah = document.createElement('input');
-        inputJumlah.type = 'text';
-        inputJumlah.name = 'jumlah_satuan[]';
-        inputJumlah.value = jumlah;
-        inputJumlah.hidden = true;
+            
 
-        const inputHarga = document.createElement("input");
-        inputHarga.type = 'text';
-        inputHarga.name = 'harga[]';
-        inputHarga.value = harga;
-        inputHarga.hidden = true;
+            let inputNama = document.createElement("input");
+            const tdNama = document.createElement("td");
+            inputNama.type = "text";
+            inputNama.name = "nama_barang[]";
+            inputNama.value = nama;
+            inputNama.required = true;
+            inputNama.readOnly = true;
 
-        const inputId = document.createElement("input");
-        inputId.type = "text";
-        inputId.name = "id_barang[]";
-        inputId.value = id;
-        inputId.hidden = true;
+            let inputJumlah = document.createElement("input");
+            const tdJumlah = document.createElement("td");
+            inputJumlah.type = "text";
+            inputJumlah.name = "jumlah_satuan[]";
+            inputJumlah.value = jumlah + 'pcs';
+            inputJumlah.required = true;
+            inputJumlah.readOnly = true;
 
-        const label = document.createElement("span");
-        label.textContent = jumlah + 'pcs - ' + nama + ' - ' + harga + ' - ' + total.toLocaleString('id-ID');
-        label.classList = "d-block mb-2";
 
-        li.appendChild(label);
-        li.appendChild(inputNama);
-        li.appendChild(inputJumlah);
-        li.appendChild(inputHarga);
-        li.appendChild(inputId);
+            let inputHarga = document.createElement("input");
+            const tdHarga = document.createElement("td");
+            inputHarga.type = "text";
+            inputHarga.name = "harga[]";
+            inputHarga.value = harga ;
+            inputHarga.required = true;
+            inputHarga.readOnly = true;
 
-        ul.appendChild(li);
+            let inputId = document.createElement("input");
+            inputId.type = "text";
+            inputId.name = "id_barang[]";
+            inputId.value = id;
+            inputId.required = true;
+            inputId.readOnly = true;
+            inputId.hidden = true;
 
-        listBarang[id] = li;
+            let jml_satuan = document.createElement("input");
+            const tdSatuan = document.createElement("td");
+            jml_satuan.type = "text";
+            jml_satuan.id = `total-harga-${id}`;
+            jml_satuan.value =  a.toLocaleString('id-ID');
+            jml_satuan.disabled = "true";
 
-    } else {
-        // Update input dan label
-        const li = listBarang[id];
-        const inputs = li.getElementsByTagName('input');
-        const label = li.querySelector('span');
 
-        inputs[1].value = jumlah; // jumlah_satuan[]
-        const updatedTotal = parseInt(jumlah) * parseInt(harga.replace(/[^0-9]/g, ''));
+            tdNama.appendChild(inputNama);
+            tdJumlah.appendChild(inputJumlah);
+            tdHarga.appendChild(inputHarga);
+            tdSatuan.appendChild(jml_satuan);
 
-        label.textContent = jumlah + 'pcs - ' + nama + ' - ' + harga + ' - ' + updatedTotal.toLocaleString('id-ID');
-}
+            tr.appendChild(tdNama);
+            tr.appendChild(tdJumlah);
+            tr.appendChild(tdHarga);
+            tr.appendChild(tdSatuan);
 
+            table.appendChild(tr);
+
+            listBarang[id] = tr;
+
+            
+
+    }else{
+        // Kalau sudah ada, update jumlah saja
+        let inputs = listBarang[id].getElementsByTagName("input");
+        inputs[1].value = jumlah + 'pcs'; // inputJumlah di urutan kedua
+
+        // jumlahkan per Produk
+        let totalHargaProdukInput = document.getElementById(`total-harga-${id}`);
+        if (totalHargaProdukInput) {
+            const b = parseInt(jumlah) * parseInt(harga.replace(/[^0-9]/g, ''));
+            totalHargaProdukInput.value = b.toLocaleString('id-ID');
+        }
+    }
     
     cekStrukBelanja();
 
@@ -193,21 +210,20 @@ function struk_belanja(id, nama, harga, jumlah) {
 }
 
 function hitungTotal() {
-    const span = document.querySelectorAll("#list-info span");
+    const rows = document.querySelectorAll("#list-info tr");
     let total = 0;
 
-    span.forEach(lis => {
-        const text = lis.textContent.trim();
-        const parts = text.split(' - ');
+    rows.forEach(row => {
+        const inputs = row.querySelectorAll("input");
 
-        if(parts.length >= 4){
-            const jml = parts[0].replace(/\./g, '').replace(/[^0-9]/g, '');
-            const hrg = parts[2].replace(/\./g, '').replace(/[^0-9]/g, ''); // hilangkan titik dan non-digit
-            const subtotal = jml * hrg;
-            console.log(subtotal);
-            if (!isNaN(subtotal)) {
-                total += subtotal;
-            }
+        if (inputs.length >= 3) { // Pastikan ada minimal 3 input (nama, jumlah, harga)
+            const jumlahStr = inputs[1].value.replace('pcs', '').trim();
+            const jumlah = parseInt(jumlahStr) || 0;
+
+            const harga = parseInt(inputs[2].value.replace(/[^0-9]/g, '')) || 0;
+
+            const subtotal = jumlah * harga;
+            total += subtotal;
         }
     });
     
@@ -218,6 +234,28 @@ function hitungTotal() {
 }
 
 
+
+// function hitungTotal() {
+
+//     const list = document.querySelectorAll("#list-info li");
+//     let total = 0;
+//     list.forEach(li => {
+//         const inputs = li.getElementsByTagName("input");
+
+//         const nama = inputs[0].value;
+//         const jumlahStr = inputs[1].value.replace('pcs', '').trim(); // hilangkan "pcs"
+//         const jumlah = parseInt(jumlahStr) || 0;
+
+//         const harga = parseInt(inputs[2].value.replace(/[^0-9]/g, '')) || 0;
+        
+//         const subtotal = jumlah * harga;
+//         total += subtotal;
+//     });
+//     document.getElementById("total").value = 'Rp.' + total.toLocaleString('id-ID');
+
+
+// }
+
     // cek button
 
     const btnBayar = document.getElementById('btnBayar');
@@ -225,7 +263,7 @@ function hitungTotal() {
 
     // Fungsi untuk mengaktifkan/menonaktifkan tombol Bayar berdasarkan isi list-info
     function cekStrukBelanja() {
-        if (listInfo.children.length > 0) { // Ada item belanja (selain header)
+        if (listInfo.children.length > 1) { // Ada item belanja (selain header)
             btnBayar.disabled = false;
         } else {
             btnBayar.disabled = true;
