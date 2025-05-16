@@ -6,12 +6,12 @@
         <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no" />
         <meta name="description" content="" />
         <meta name="author" content="" />
-        <<title>@yield('title') - Aplikasi Warung</title>
+        <title>@yield('title') - Aplikasi Warung</title>
         <link href="https://cdn.jsdelivr.net/npm/simple-datatables@7.1.2/dist/style.min.css" rel="stylesheet" />
         <link href="{{ asset('css/styles.css') }}" rel="stylesheet" />
 
         {{-- Style Local --}}
-        <link rel="stylesheet" href="css/styleLocal.css">
+        <link rel="stylesheet" href="{{ asset('css/styleLocal.css') }}">
 
 
         <script src="https://use.fontawesome.com/releases/v6.3.0/js/all.js" crossorigin="anonymous"></script>
